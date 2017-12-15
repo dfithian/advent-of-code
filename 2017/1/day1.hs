@@ -1,7 +1,9 @@
 import ClassyPrelude
+import Data.Text (strip)
 
-doCaptcha :: String -> IO Int
-doCaptcha input = do
+doCaptcha :: FilePath -> IO Int
+doCaptcha path = do
+  input <- unpack . strip <$> readFileUtf8 path
   is <- traverse (\ x -> maybe (fail $ "not a digit: " <> [x]) pure $ readMay [x]) input
   maybe (fail "not enough input") (pure . flip captcha is) $ headMay is
 
